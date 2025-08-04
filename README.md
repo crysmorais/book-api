@@ -34,7 +34,7 @@ A aplicação será inicializada e os seguintes serviços serão criados:
 - API `book-api` rodando na porta `8080`
 - PostgreSQL na porta `5432`
 - Redis na porta `6379`
-- Swagger disponível em: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- Swagger disponível em: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 

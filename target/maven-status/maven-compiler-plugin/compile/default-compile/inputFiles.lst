@@ -1,7 +1,7 @@
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\BookApiApplication.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\config\RedisConfig.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\controller\BookController.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\dto\BookDTO.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\model\Book.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\repository\BookRepository.java
-C:\Users\crysm\Desktop\API - Sant\API-CODE\book-apiEstrutura\src\main\java\com\example\bookapi\service\BookService.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\BookApiApplication.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\config\RedisConfig.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\controller\BookController.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\dto\BookDTO.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\model\Book.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\repository\BookRepository.java
+C:\Users\crysm\Desktop\API - Sant\API-CODE\book-api\src\main\java\com\example\bookapi\service\BookService.java
