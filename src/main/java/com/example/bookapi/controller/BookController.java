@@ -31,7 +31,7 @@ public class BookController {
     @Operation(summary = "Buscar livro por ID")
     public BookDTO getBookById(
             @Parameter(name = "id", in = ParameterIn.PATH, required = true, description = "ID do livro")
-            @PathVariable Long id
+            @PathVariable(name = "id") Long id
     ) {
         return bookService.getBookById(id);
     }
@@ -40,7 +40,7 @@ public class BookController {
     @Operation(summary = "Buscar livros por autor")
     public List<BookDTO> getBooksByAuthor(
             @Parameter(name = "author", in = ParameterIn.PATH, required = true, description = "Nome do autor")
-            @PathVariable String author
+            @PathVariable(name = "author") String author
     ) {
         return bookService.getBooksByAuthor(author);
     }
@@ -49,7 +49,7 @@ public class BookController {
     @Operation(summary = "Buscar livros por gênero")
     public List<BookDTO> getBooksByGenre(
             @Parameter(name = "genre", in = ParameterIn.PATH, required = true, description = "Nome do gênero")
-            @PathVariable String genre
+            @PathVariable(name = "genre") String genre
     ) {
         return bookService.getBooksByGenre(genre);
     }

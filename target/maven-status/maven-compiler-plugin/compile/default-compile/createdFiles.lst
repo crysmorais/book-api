@@ -1,7 +1,9 @@
 com\example\bookapi\service\BookService.class
 com\example\bookapi\dto\BookDTO.class
+com\example\bookapi\client\OpenLibraryResponse.class
 com\example\bookapi\config\RedisConfig.class
 com\example\bookapi\model\Book.class
 com\example\bookapi\BookApiApplication.class
 com\example\bookapi\controller\BookController.class
+com\example\bookapi\client\BookDoc.class
 com\example\bookapi\repository\BookRepository.class
