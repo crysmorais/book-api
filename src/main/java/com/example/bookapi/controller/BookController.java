@@ -24,7 +24,7 @@ public class BookController {
     @GetMapping
     @Operation(summary = "Listar todos os livros")
     public List<BookDTO> getAllBooks() {
-        return bookService.getAllBooksCached(); // usa cache
+        return bookService.getAllBooksCached(); // usando cache
     }
 
     @GetMapping("/{id}")
@@ -33,7 +33,7 @@ public class BookController {
             @Parameter(name = "id", in = ParameterIn.PATH, required = true, description = "ID do livro")
             @PathVariable(name = "id") Long id
     ) {
-        return bookService.getBookByIdCached(id); // usa cache
+        return bookService.getBookByIdCached(id); // usando cache
     }
 
     @GetMapping("/author/{author}")
@@ -42,7 +42,7 @@ public class BookController {
             @Parameter(name = "author", in = ParameterIn.PATH, required = true, description = "Nome do autor")
             @PathVariable(name = "author") String author
     ) {
-        return bookService.getBooksByAuthorCached(author); // usa cache
+        return bookService.getBooksByAuthorCached(author); // usando cache
     }
 
     @GetMapping("/genre/{genre}")
@@ -51,6 +51,6 @@ public class BookController {
             @Parameter(name = "genre", in = ParameterIn.PATH, required = true, description = "Nome do gênero")
             @PathVariable(name = "genre") String genre
     ) {
-        return bookService.getBooksByGenreCached(genre); // usa cache
+        return bookService.getBooksByGenreCached(genre); // usando cache
     }
 }

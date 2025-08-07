@@ -22,28 +22,34 @@ public class BookService {
         this.bookExternalService = bookExternalService;
     }
 
-    // MÉTODO PÚBLICO COM CACHE
+    // ALL BOOKS
+
     @Cacheable(value = "allBooks")
     public List<BookDTO> getAllBooksCached() {
         return getAllBooks();
     }
 
-    // LÓGICA COMPLETA (SEM CACHE)
     public List<BookDTO> getAllBooks() {
         System.out.println("🔍 Buscando todos os livros...");
+
         List<Book> books = bookRepository.findAll();
         if (!books.isEmpty()) {
+            System.out.println("Encontrado no banco: " + books.size() + " livros.");
             return books.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
 
         List<Book> externalBooks = bookExternalService.fetchAllBooks();
-        if (!externalBooks.isEmpty()) {
-            bookRepository.saveAll(externalBooks);
-            return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
+        if (externalBooks.isEmpty()) {
+            System.out.println("Nenhum livro encontrado na API externa.");
+            return List.of();
         }
 
-        return List.of(); // Lista vazia
+        System.out.println("Salvando " + externalBooks.size() + " livros no banco.");
+        bookRepository.saveAll(externalBooks);
+        return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+    // BOOK BY ID
 
     @Cacheable(value = "bookById", key = "#id")
     public BookDTO getBookByIdCached(Long id) {
@@ -51,18 +57,25 @@ public class BookService {
     }
 
     public BookDTO getBookById(Long id) {
-        System.out.println("🔍 Buscando livro por ID...");
-        Optional<Book> optionalBook = bookRepository.findById(id);
-        if (optionalBook.isPresent()) {
-            return convertToDTO(optionalBook.get());
+        System.out.println("Buscando livro por ID: " + id);
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            System.out.println("Encontrado no banco.");
+            return convertToDTO(book.get());
         }
 
         Optional<Book> externalBook = bookExternalService.fetchBookById(id);
-        return externalBook.map(book -> {
-            bookRepository.save(book);
-            return convertToDTO(book);
-        }).orElse(null);
+        if (externalBook.isPresent()) {
+            System.out.println("Salvando livro no banco.");
+            bookRepository.save(externalBook.get());
+            return convertToDTO(externalBook.get());
+        }
+
+        System.out.println("Livro não encontrado.");
+        return null;
     }
+
+    // BOOKS BY AUTHOR
 
     @Cacheable(value = "booksByAuthor", key = "#author")
     public List<BookDTO> getBooksByAuthorCached(String author) {
@@ -70,20 +83,30 @@ public class BookService {
     }
 
     public List<BookDTO> getBooksByAuthor(String author) {
-        System.out.println("🔍 Buscando livros por autor...");
-        List<Book> books = bookRepository.findByAuthorContainingIgnoreCase(author);
-        if (!books.isEmpty()) {
-            return books.stream().map(this::convertToDTO).collect(Collectors.toList());
+        System.out.println("🔍 Buscando livros por autor: " + author);
+
+        List<Book> booksFromDb = bookRepository.findByAuthorContainingIgnoreCase(author);
+        if (!booksFromDb.isEmpty()) {
+            System.out.println("Encontrado no banco: " + booksFromDb.size() + " livros.");
+            return booksFromDb.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
 
         List<Book> externalBooks = bookExternalService.fetchBooksByAuthor(author);
-        if (!externalBooks.isEmpty()) {
-            bookRepository.saveAll(externalBooks);
-            return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
+        if (externalBooks.isEmpty()) {
+            System.out.println("Nenhum livro encontrado na API externa.");
+            return List.of();
         }
 
-        return List.of();
+        externalBooks.forEach(book ->
+                System.out.println("Livro da API externa: " + book.getTitle() + " | Autor: " + book.getAuthor())
+        );
+
+        System.out.println("Salvando " + externalBooks.size() + " livros no banco.");
+        bookRepository.saveAll(externalBooks);
+        return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+    // BOOKS BY GENRE
 
     @Cacheable(value = "booksByGenre", key = "#genre")
     public List<BookDTO> getBooksByGenreCached(String genre) {
@@ -91,21 +114,26 @@ public class BookService {
     }
 
     public List<BookDTO> getBooksByGenre(String genre) {
-        System.out.println("🔍 Buscando livros por gênero...");
+        System.out.println("Buscando livros por gênero: " + genre);
+
         List<Book> books = bookRepository.findByGenreContainingIgnoreCase(genre);
         if (!books.isEmpty()) {
+            System.out.println("Encontrado no banco: " + books.size() + " livros.");
             return books.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
 
         List<Book> externalBooks = bookExternalService.fetchBooksByGenre(genre);
-        if (!externalBooks.isEmpty()) {
-            bookRepository.saveAll(externalBooks);
-            return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
+        if (externalBooks.isEmpty()) {
+            System.out.println("Nenhum livro encontrado na API externa.");
+            return List.of();
         }
 
-        return List.of();
+        System.out.println("Salvando " + externalBooks.size() + " livros no banco.");
+        bookRepository.saveAll(externalBooks);
+        return externalBooks.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    // CONVERSÃO
     private BookDTO convertToDTO(Book book) {
         return new BookDTO(
                 book.getId(),

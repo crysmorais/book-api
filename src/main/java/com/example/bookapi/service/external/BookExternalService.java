@@ -21,7 +21,6 @@ public class BookExternalService {
     }
 
     public List<Book> fetchAllBooks() {
-        // Exemplo com termo genérico "programming"
         String url = UriComponentsBuilder
                 .fromHttpUrl(BASE_URL + "/search.json")
                 .queryParam("q", "programming")
@@ -32,7 +31,6 @@ public class BookExternalService {
     }
 
     public List<Book> fetchBooksByGenre(String genre) {
-        // OpenLibrary não tem endpoint direto para gênero, então usamos como termo de busca
         String url = UriComponentsBuilder
                 .fromHttpUrl(BASE_URL + "/search.json")
                 .queryParam("subject", genre)
@@ -45,16 +43,25 @@ public class BookExternalService {
     public List<Book> fetchBooksByAuthor(String author) {
         String url = UriComponentsBuilder
                 .fromHttpUrl(BASE_URL + "/search.json")
-                .queryParam("author", author)
+                .queryParam("q", author)
                 .toUriString();
 
+        System.out.println("🔗 Chamando OpenLibrary - URL: " + url);
         OpenLibraryResponse response = restTemplate.getForObject(url, OpenLibraryResponse.class);
-        return convertResponseToBooks(response);
+
+        if (response != null && response.getDocs() != null) {
+            System.out.println("Quantidade de livros retornados da API: " + response.getDocs().size());
+        } else {
+            System.out.println("API retornou null ou sem docs");
+        }
+
+        return convertResponseToBooks(response).stream()
+                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public Optional<Book> fetchBookById(Long id) {
-        // OpenLibrary ID geralmente é alfanumérico, aqui usamos como exemplo simples
-        String olid = "OL" + id + "M"; // Exemplo: OL1M
+        String olid = "OL" + id + "M";
         String url = BASE_URL + "/books/" + olid + ".json";
 
         try {
@@ -62,8 +69,12 @@ public class BookExternalService {
             if (detail != null) {
                 Book book = new Book();
                 book.setTitle(detail.getTitle());
-                book.setAuthor(detail.getBy_statement());
-                book.setGenre(""); // OpenLibrary não traz gênero diretamente
+                book.setAuthor(
+                        detail.getBy_statement() != null
+                                ? detail.getBy_statement()
+                                : "Autor desconhecido"
+                );
+                book.setGenre("Gênero não informado");
                 book.setExternalId(olid);
                 return Optional.of(book);
             }
@@ -83,10 +94,17 @@ public class BookExternalService {
                 .map(doc -> {
                     Book book = new Book();
                     book.setTitle(doc.getTitle());
-                    book.setAuthor(doc.getAuthorName() != null && !doc.getAuthorName().isEmpty()
+
+                    String author = (doc.getAuthorName() != null && !doc.getAuthorName().isEmpty())
                             ? doc.getAuthorName().get(0)
-                            : "Desconhecido");
-                    book.setGenre(""); // OpenLibrary não retorna gênero diretamente
+                            : "Autor desconhecido";
+                    book.setAuthor(author);
+
+                    String genre = (doc.getSubject() != null && !doc.getSubject().isEmpty())
+                            ? doc.getSubject().get(0)
+                            : "Gênero não informado";
+                    book.setGenre(genre);
+
                     book.setExternalId(doc.getKey());
                     return book;
                 })

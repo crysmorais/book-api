@@ -1,10 +1,13 @@
 package com.example.bookapi.dto;
 
-import com.example.bookapi.model.Book;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
+
 @Schema(description = "Representa os dados de um livro")
-public class BookDTO {
+public class BookDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Schema(description = "ID do livro", example = "1")
     private Long id;
@@ -21,13 +24,10 @@ public class BookDTO {
     @Schema(description = "Identificador externo (ID da OpenLibrary)", example = "OL123456M")
     private String externalId;
 
-    // Construtores
+    // Construtor padrão
     public BookDTO() {}
 
-    private BookDTO convertToDTO(Book book) {
-        return new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), book.getGenre(), book.getPublishedDate());
-    }
-
+    // Construtor completo
     public BookDTO(Long id, String title, String author, String genre, String externalId) {
         this.id = id;
         this.title = title;
@@ -37,7 +37,6 @@ public class BookDTO {
     }
 
     // Getters e Setters
-
     public Long getId() {
         return id;
     }
@@ -77,4 +76,5 @@ public class BookDTO {
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }
+
 }

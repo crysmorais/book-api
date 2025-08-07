@@ -1,14 +1,23 @@
 package com.example.bookapi.service.external;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenLibraryDoc {
+
     private String title;
-    private List<String> author_name;
+
+    @JsonProperty("author_name")
+    private List<String> authorName;
+
+    private List<String> subject;
+
     private String key;
 
+    // Getters e setters
     public String getTitle() {
         return title;
     }
@@ -18,11 +27,19 @@ public class OpenLibraryDoc {
     }
 
     public List<String> getAuthorName() {
-        return author_name;
+        return authorName;
     }
 
-    public void setAuthorName(List<String> author_name) {
-        this.author_name = author_name;
+    public void setAuthorName(List<String> authorName) {
+        this.authorName = authorName;
+    }
+
+    public List<String> getSubject() {
+        return subject;
+    }
+
+    public void setSubject(List<String> subject) {
+        this.subject = subject;
     }
 
     public String getKey() {
