@@ -16,8 +16,10 @@ public class Book {
     private String externalId;
     private String publishedDate;
 
+    // Construtor padrão (necessário para JPA)
     public Book() {}
 
+    // Construtor com campos principais (parcial)
     public Book(String title, String author, String genre, String openLibraryId) {
         this.title = title;
         this.author = author;
@@ -25,7 +27,18 @@ public class Book {
         this.openLibraryId = openLibraryId;
     }
 
-    // Getters and Setters
+    // Construtor completo
+    public Book(Long id, String title, String author, String genre, String externalId, String openLibraryId, String publishedDate) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.externalId = externalId;
+        this.openLibraryId = openLibraryId;
+        this.publishedDate = publishedDate;
+    }
+
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

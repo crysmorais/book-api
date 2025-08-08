@@ -26,6 +26,6 @@ public class CacheController {
                 cacheManager.getCache(name).clear();
             }
         });
-        return "🔄 Todos os caches foram limpos com sucesso!";
+        return "cache limpo com sucesso!";
     }
 }
