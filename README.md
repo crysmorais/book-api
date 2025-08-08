@@ -1,95 +1,102 @@
-book-api
+# book-api
 
-### 1. Arquitetura da Solução
-A book-api é uma aplicação REST construída com Spring Boot, projetada para consultar livros da OpenLibrary API, armazenar dados localmente em PostgreSQL e otimizar consultas frequentes com Redis.
-
-### Tecnologias Utilizadas
-- Java 17 + Spring Boot  
-- PostgreSQL (persistência local)  
-- Redis (cache de livros)  
-- OpenLibrary (fonte pública de dados)  
-- Swagger (documentação automática)  
-- Docker + Docker Compose  
+API REST em Java com Spring Boot que consome dados da OpenLibrary, armazena no PostgreSQL e utiliza Redis como cache.
 
 ---
 
-### 2. Execução Rápida com Script Automático
-Este projeto possui um script chamado `build-and-run.sh` que automatiza o processo de:
+## Tecnologias
 
-- Build do projeto Java com Maven  
-- Criação da imagem Docker da aplicação  
-- Inicialização do ambiente com `docker-compose`  
+- Java 17+
+- Spring Boot 3.2.5
+- PostgreSQL
+- Redis
+- Docker / Docker Compose
+- Swagger/OpenAPI
 
-####  Como executar
+---
 
-No terminal, dentro da pasta do projeto, execute:
+## Clonando o projeto
+
+```
+git clone https://github.com/seu-usuario/book-api.git
+cd book-api
+```
+
+---
+
+## Pré-requisitos
+
+Certifique-se de que você tem as seguintes ferramentas instaladas:
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- Java 17+ (caso deseje rodar sem Docker)
+- Maven 3.8+ (caso deseje rodar sem Docker)
+
+---
+
+## Executando com Docker
+
+Execute o script abaixo (Linux/macOS/WSL):
 
 ```
 chmod +x build-and-run.sh
 ./build-and-run.sh
 ```
 
-A aplicação será inicializada e os seguintes serviços serão criados:
+> Se estiver no Windows e ocorrer erro com `chmod`, execute diretamente:
+> ```
+> ./build-and-run.sh
+> ```
 
-- API book-api rodando na porta `8080`
-- PostgreSQL na porta `5432`
-- Redis na porta `6379`
-- Swagger disponível em: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
----
-
-### Windows: Erros comuns com o script `.sh`
-
- Erro comum ao tentar rodar `chmod +x` ou `./build-and-run.sh` no PowerShell:
-```
-chmod : O termo 'chmod' não é reconhecido como nome de cmdlet...
-```
-
-####  Soluções:
-
-🔹 **Opção 1: Usar Git Bash (recomendado)**  
-- Instale o Git para Windows  
-- Clique com o botão direito na pasta do projeto e selecione "Git Bash Here"  
-- Rode o script:
-  ```
-  chmod +x build-and-run.sh
-  ./build-and-run.sh
-  ```
-
-🔹 **Opção 2: Rodar os comandos manualmente no PowerShell**  
-Caso não tenha o Git Bash, execute os comandos do script manualmente no terminal:
-
-```powershell
-mvn clean package -DskipTests
-docker-compose down
-docker-compose up --build
-```
+Esse script irá:
+- Fazer build da aplicação
+- Subir containers do PostgreSQL, Redis e da API
 
 ---
 
-### 3. Explicação sobre o Case Desenvolvido
+## Acessando a aplicação
 
-A API implementa os seguintes endpoints:
-
-- `GET /books` — lista todos os livros persistidos  
-- `GET /books/{id}` — consulta um livro pelo ID  
-- `GET /books/author/{author}` — consulta livros por autor  
-- `GET /books/genre/{genre}` — consulta livros por gênero  
-
-#### Fluxo de Consulta:
-1. A API verifica se os dados estão em cache (Redis).  
-2. Se não estiverem, consulta o PostgreSQL.  
-3. Se ainda não existirem localmente, chama a OpenLibrary, persiste os dados e atualiza o cache.
+- **Swagger UI**: [http://localhost:8080/book-api/swagger-ui/index.html#/](http://localhost:8080/book-api/swagger-ui.html)
+- **API Docs (OpenAPI)**: [http://localhost:8080/book-api/v3/api-docs](http://localhost:8080/book-api/v3/api-docs)
 
 ---
 
-### 4. Melhorias e Considerações Finais
+## Endpoints disponíveis
 
-####  Melhorias Futuras:
-- Implementar paginação e ordenação  
-- Adicionar autenticação JWT  
-- Incluir monitoramento com Prometheus + Grafana
+| Método | Rota                        | Descrição                         |
+|--------|-----------------------------|-----------------------------------|
+| GET    | `/books`                    | Lista todos os livros             |
+| GET    | `/books/{id}`               | Busca livro por ID                |
+| GET    | `/books/author/{author}`    | Busca livros por autor            |
+| GET    | `/books/genre/{genre}`      | Busca livros por gênero           |
+| DELETE | `/cache/clear`              | Limpa todos os caches (Redis)     |
 
-####  Desafios Encontrados:
-- Estrutura variável das respostas da OpenLibrary  
-- Consistência entre cache e banco de dados
+---
+
+## Rodando os testes
+
+```
+mvn test
+```
+
+> Os testes utilizam H2 em memória e mocks para Redis/PostgreSQL, não é necessário subir os containers.
+
+---
+
+## Variáveis de ambiente (opcional)
+
+Por padrão, as configurações de banco e Redis estão no `application.properties`, mas você pode sobrescrever via variáveis de ambiente, por exemplo:
+
+```
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/book_db
+export SPRING_REDIS_HOST=localhost
+```
+
+---
+
+## Considerações finais
+
+- O cache melhora a performance nas buscas repetidas.
+- Ao não encontrar um dado no banco, a API busca na OpenLibrary e salva localmente.
+- Gêneros vindos da OpenLibrary são traduzidos automaticamente para português.
