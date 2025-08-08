@@ -4,7 +4,7 @@
 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>com</groupId>
     <artifactId>book-api</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -84,7 +84,7 @@ https://maven.apache.org/xsd/maven-4.0.0.xsd">
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.example.bookapi.BookApiApplication</mainClass>
+                    <mainClass>com.bookapi.BookApiApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>
